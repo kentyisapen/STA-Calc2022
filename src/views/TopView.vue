@@ -63,9 +63,9 @@ export default defineComponent({
   setup() {
     const input = ref("");
     const nums: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const marks: string[] = ["+", "-", "*", "/", "(", ")"];
+    const marks: string[] = ["+", "-", "*", "/", "%", ".", "(", ")"];
     const spMarks: string[] = ["=", "AC", "CE"];
-    const pattern2 = /^[\d*/\-+().\s]+/;
+    const pattern2 = /^[\d*/\-+()%.^\s]+/;
     const logs = ref([]);
     const logIndex = ref(0);
     const inputNum = (num: number): void => {
@@ -97,7 +97,7 @@ export default defineComponent({
     const calc = (): void => {
       const res = input.value.match(pattern2);
       let temp = "";
-      //一旦正規表現で数値と記号以外を弾く
+      //一旦正規表現で数値と所定の記号以外を弾く
       if (!res) {
         openError();
         return;

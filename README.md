@@ -18,6 +18,7 @@
     - Vue3のUIフレームワーク、element-plusを使用
 
 - Log機能
+    - localStorage仕様
     - Log削除も
     - Logから値も戻せる
 
