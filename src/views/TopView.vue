@@ -57,7 +57,7 @@
 <script lang="ts">
 import { ElNotification } from "element-plus";
 import { defineComponent, ref } from "vue";
-import LogView from "./LogView.vue";
+import LogView from "../components/Top/LogView.vue";
 
 export default defineComponent({
   setup() {
