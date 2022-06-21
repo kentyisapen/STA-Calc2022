@@ -55,6 +55,13 @@
 </template>
 
 <script lang="ts">
+
+interface Log{
+  index:Number,
+  formula:String,
+  answer:String,
+}
+
 import { ElNotification } from "element-plus";
 import { defineComponent, ref } from "vue";
 import LogView from "../components/Top/LogView.vue";
@@ -66,7 +73,7 @@ export default defineComponent({
     const marks: string[] = ["+", "-", "*", "/", "%", ".", "(", ")"];
     const spMarks: string[] = ["=", "AC", "CE"];
     const pattern2 = /^[\d*/\-+()%.^\s]+/;
-    const logs = ref([]);
+    const logs = ref(<Log[]>[]);
     const logIndex = ref(0);
     const inputNum = (num: number): void => {
       input.value += num;
@@ -109,12 +116,12 @@ export default defineComponent({
         openError();
         return;
       }
-
-      logs.value.push({
+      const log:Log = {
         index: logIndex.value++,
         formula: input.value,
         answer: temp,
-      });
+      }
+      logs.value.push(log);
       localStorage.setItem("calc_logs", JSON.stringify(logs.value));
       localStorage.setItem("log_index", String(logIndex.value));
       input.value = temp;
