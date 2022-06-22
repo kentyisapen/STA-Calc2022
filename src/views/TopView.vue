@@ -55,11 +55,10 @@
 </template>
 
 <script lang="ts">
-
-interface Log{
-  index:Number,
-  formula:String,
-  answer:String,
+interface Log {
+  index: number;
+  formula: string;
+  answer: string;
 }
 
 import { ElNotification } from "element-plus";
@@ -73,7 +72,7 @@ export default defineComponent({
     const marks: string[] = ["+", "-", "*", "/", "%", ".", "(", ")"];
     const spMarks: string[] = ["=", "AC", "CE"];
     const pattern2 = /^[\d*/\-+()%.^\s]+/;
-    const logs = ref(<Log[]>[]);
+    const logs = ref<Log[]>([]);
     const logIndex = ref(0);
     const inputNum = (num: number): void => {
       input.value += num;
@@ -116,11 +115,11 @@ export default defineComponent({
         openError();
         return;
       }
-      const log:Log = {
+      const log: Log = {
         index: logIndex.value++,
         formula: input.value,
         answer: temp,
-      }
+      };
       logs.value.push(log);
       localStorage.setItem("calc_logs", JSON.stringify(logs.value));
       localStorage.setItem("log_index", String(logIndex.value));
