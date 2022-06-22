@@ -49,6 +49,7 @@
         :logs="logs"
         @setInput="setInput"
         @deleteLog="deleteLog"
+        @deleteAllLog="deleteAllLog"
       ></LogView>
     </el-row>
   </el-main>
@@ -63,17 +64,19 @@ interface Log {
 
 import { ElNotification } from "element-plus";
 import { defineComponent, ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import LogView from "../components/Top/LogView.vue";
 
 export default defineComponent({
   setup() {
     const input = ref("");
     const nums: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const marks: string[] = ["+", "-", "*", "/", "%", ".", "(", ")"];
+    const marks: string[] = ["+", "-", "*", "/", "%", "^", "(", ")", "."];
     const spMarks: string[] = ["=", "AC", "CE"];
     const pattern2 = /^[\d*/\-+()%.^\s]+/;
     const logs = ref<Log[]>([]);
     const logIndex = ref(0);
+    const logLength = ref(100);
     const inputNum = (num: number): void => {
       input.value += num;
     };
@@ -110,7 +113,7 @@ export default defineComponent({
       }
       //その後evalで実行し、エラーが起きたらnotification
       try {
-        temp = String(eval(res[0]));
+        temp = String(eval(res[0].replace("^", "**")));
       } catch (error) {
         openError();
         return;
@@ -121,6 +124,9 @@ export default defineComponent({
         answer: temp,
       };
       logs.value.push(log);
+      while (logs.value.length > logLength.value) {
+        logs.value.shift();
+      }
       localStorage.setItem("calc_logs", JSON.stringify(logs.value));
       localStorage.setItem("log_index", String(logIndex.value));
       input.value = temp;
@@ -131,6 +137,21 @@ export default defineComponent({
     const deleteLog = (index: number) => {
       logs.value = logs.value.filter((log) => !(log.index == index));
       localStorage.setItem("calc_logs", JSON.stringify(logs.value));
+    };
+    const deleteAllLog = () => {
+      ElMessageBox.confirm("すべてのログを削除しますか？", "Warning", {
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancel",
+        type: "warning",
+      }).then(() => {
+        const deleteTargetLogLength = logs.value.length;
+        logs.value = [];
+        localStorage.setItem("calc_logs", JSON.stringify(logs.value));
+        ElMessage({
+          type: "success",
+          message: deleteTargetLogLength + "件のログを削除しました",
+        });
+      });
     };
 
     if (localStorage.log_index == null) {
@@ -156,6 +177,7 @@ export default defineComponent({
       logs,
       setInput,
       deleteLog,
+      deleteAllLog,
     };
   },
   components: { LogView },
@@ -163,6 +185,9 @@ export default defineComponent({
 </script>
 
 <style lang="css" scoped>
+.el-main {
+  overflow: hidden;
+}
 .input_number_button {
   width: calc(33% - 4px);
   height: 40px;
